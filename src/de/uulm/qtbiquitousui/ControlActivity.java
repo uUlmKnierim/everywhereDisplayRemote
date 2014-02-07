@@ -1,7 +1,5 @@
 package de.uulm.qtbiquitousui;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -13,7 +11,6 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 public class ControlActivity extends Activity {
 
@@ -56,19 +53,13 @@ public class ControlActivity extends Activity {
 			}
 		});
 		
-		
-		
-		
-		
+
 		Button load = (Button) findViewById(R.id.load);
 		load.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				 new PositionServer(v).execute("");
-
-
-	
 			}
 		});
 		

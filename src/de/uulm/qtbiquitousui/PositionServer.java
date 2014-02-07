@@ -1,11 +1,5 @@
 package de.uulm.qtbiquitousui;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import android.app.AlertDialog;
@@ -24,39 +18,7 @@ public class PositionServer extends AsyncTask<String, Void, ArrayList<String>> {
 
 	@Override
 	protected ArrayList<String> doInBackground(String... params) {
-		System.out.println("Talk to the server!!!!");
-		String value = params[0];
-		Socket client;
-		PrintWriter out;
-		BufferedReader in;
-		ArrayList<String> surfaces = new ArrayList<String>();
-
-		try {
-			client = new Socket("134.60.70.63", 8888);
-			out = new PrintWriter(client.getOutputStream(), true);
-			out.append("p");
-			out.flush();
-
-			in = new BufferedReader(new InputStreamReader(
-					client.getInputStream()));
-
-			String result;
-			while ((result = in.readLine()) != null) {
-				System.out.println("<" + result + ">");
-				surfaces.add(result);
-			}
-
-			in.close();
-			out.close();
-			client.close();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		ArrayList<String> surfaces = Server.getInstanceOf().getPositions();
 		return surfaces;
 	}
 

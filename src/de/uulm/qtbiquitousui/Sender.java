@@ -23,9 +23,7 @@ public class Sender {
 		public void run() {
 			switch (value) {
 			case 1:
-//				new ServerOld().execute("up");
-				Thread t = new Thread(Server.getInstanceOf());
-				Server.getInstanceOf().sendData("up");
+				new ServerOld().execute("up");
 				break;
 			case 3:
 				new ServerOld().execute("right");
