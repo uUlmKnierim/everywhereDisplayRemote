@@ -3,33 +3,69 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="top"
+    android:background="#28282a"
     tools:context=".ControlActivity" >
 
     <RelativeLayout
         android:id="@+id/layout_joystick"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="186px"
+        android:layout_height="186px"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="42dp"
-        android:background="@drawable/image_button_bg"
+        android:background="@drawable/joystick"
         android:gravity="top" >
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/load"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Load position" />
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_alignParentBottom="true"
+       android:layout_alignParentLeft="true"
+       android:layout_marginBottom="25dp"
+        >
 
-    <Button
-        android:id="@+id/save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/load"
-        android:layout_centerHorizontal="true"
-        android:text="Save position" />
+       <ImageButton
+           android:id="@+id/refresh"
+           android:background="#28282a"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignParentBottom="true"
+           android:layout_alignParentLeft="true"
+           android:src="@drawable/update50"
+           android:layout_weight="1"
+           android:text="Recalibrate" />
+
+       <ImageButton
+           android:id="@+id/done"
+           android:background="#28282a"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:src="@drawable/checkmark50"
+           android:layout_weight="1"
+           android:text="Recalibrate" />
+
+       <ImageButton
+           android:id="@+id/load"
+           android:background="#28282a"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignParentBottom="true"
+           android:layout_alignRight="@+id/layout_joystick"
+           android:src="@drawable/openedfolder50"
+           android:layout_weight="1"
+           android:text="Load position" />
+
+       <ImageButton
+           android:id="@+id/save"
+           android:background="#28282a"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignParentBottom="true"
+           android:layout_alignParentRight="true"
+           android:src="@drawable/saveas50"
+           android:layout_weight="1"
+           android:text="Save position" />
+   </LinearLayout>
 
 </RelativeLayout>

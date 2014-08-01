@@ -7,8 +7,9 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.util.Log;
 
@@ -18,14 +19,16 @@ public class Server {
 	private Socket client;
 	private PrintWriter out;
 	private BufferedReader in;
-
+	private static InetSocketAddress ip = null;
+	
 	
 	private void connect() {
 		try {
 			server.client = new Socket();
 			server.client.setSoTimeout(30000);
 			server.client.setKeepAlive(true);
-			server.client.connect(new InetSocketAddress("134.60.70.63", 8888));
+			server.client.connect(ip);
+			Log.d("TAG","connect to:" + ip);
 			server.out = new PrintWriter(server.client.getOutputStream(), true);
 			server.in = new BufferedReader(new InputStreamReader(server.client.getInputStream()));
 		} catch (IOException e) {
@@ -33,21 +36,71 @@ public class Server {
 		}	
 	}
 
-	public static Server getInstanceOf() {
+	protected void setIp(String address){
+	
+		
+		String PATTERN = 
+		        "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+		        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+		        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+		        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+
+		          
+		      Pattern pattern = Pattern.compile(PATTERN);
+		      Matcher matcher = pattern.matcher(address);
+		      
+				try {
+					client.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		      
+		     
+		      if(matcher.matches()){
+		    	  //valid ip
+		  		ip = new InetSocketAddress(address, 8888);
+		  		Log.d("TAG", "IP is valid");
+		      }else{
+		  		ip = new InetSocketAddress("127.0.0.1", 8888);
+		  		Log.d("TAG", "IP is NOT valid");
+		      }}
+	
+	
+	private void init(){
+		server.client = new Socket();
+		try {
+			server.client.setSoTimeout(30000);
+			server.client.setKeepAlive(true);
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public static Server getInstanceOf() {	
+		
+
+		
 		if (server == null) {
 			server = new Server();
-			server.connect();
+			server.init();
+			if(ip!=null){
+				server.connect();}
+			else 
+				return server;
 		}
 
-		if (!server.client.isConnected()) {
-			System.out.println("Client not Connected");
+		if (ip!=null & !server.client.isConnected()) {
+			System.out.println("Client was not Connected");
 			server.connect();
 		}
 		return server;
 	}
 
 	protected void sendData(String data) {
-		if(!this.client.isConnected()){
+		if(!server.client.isConnected()){
 			Log.e("SERVER", "NOT Connected");
 			return;
 		}
@@ -75,5 +128,17 @@ public class Server {
 			e.printStackTrace();
 		}
 		return surfaces;
+	}
+	
+	protected void close(){
+		try {
+			out.close();
+			in.close();
+			client.close();
+			server = null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

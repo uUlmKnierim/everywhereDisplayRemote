@@ -21,21 +21,22 @@ public class Sender {
 
 		@Override
 		public void run() {
+			String result;
 			switch (value) {
 			case 1:
-				new ServerOld().execute("up");
+			 new SendTask().execute("up");
 				break;
 			case 3:
-				new ServerOld().execute("right");
+				new SendTask().execute("right");
 				break;
 			case 5:
-				new ServerOld().execute("down");
+				new SendTask().execute("down");
 				break;
 			case 7:
-				new ServerOld().execute("left");
+				new SendTask().execute("left");
 				break;
 			}
-			handler.postDelayed(this, 500);
+			handler.postDelayed(this, 250);
 		}
 	};
 

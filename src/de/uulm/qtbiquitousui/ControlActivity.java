@@ -1,15 +1,21 @@
 package de.uulm.qtbiquitousui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.text.Editable;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 public class ControlActivity extends Activity {
@@ -19,23 +25,35 @@ public class ControlActivity extends Activity {
 
 	Sender s;
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
 		super.onCreate(savedInstanceState);
+		
+		StrictMode.ThreadPolicy stPolicy= new StrictMode.ThreadPolicy.Builder().permitAll().build(); 
+		StrictMode.setThreadPolicy(stPolicy);
+		
+		
 		setContentView(R.layout.activity_control);
 
+        SharedPreferences settings = getSharedPreferences("MyPrefs", 0);
+        String ip = settings.getString("PROCAMSIP", "0.0.0.0");
+	    Server.getInstanceOf().setIp(ip);      	      
+
+		
+		
+		
 		s = new Sender();
 		layout_joystick = (RelativeLayout) findViewById(R.id.layout_joystick);
 		js = new JoyStickClass(getApplicationContext(), layout_joystick,
-				R.drawable.image_button);
-
-		js.setStickSize(120, 120);
+				R.drawable.joystickstick);
+		js.setStickSize(250, 250);
 		js.setLayoutSize(600, 600);
-		js.setLayoutAlpha(150);
-		js.setStickAlpha(100);
+		js.setLayoutAlpha(255);
+		js.setStickAlpha(255);
 		js.setOffset(90);
 		js.setMinimumDistance(50);
+		js.resetStickPos();
 
 		layout_joystick.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View arg0, MotionEvent arg1) {
@@ -52,19 +70,18 @@ public class ControlActivity extends Activity {
 				return true;
 			}
 		});
-		
 
-		Button load = (Button) findViewById(R.id.load);
+		ImageButton load = (ImageButton) findViewById(R.id.load);
 		load.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				 new PositionServer(v).execute("");
+				new PositionTask(v).execute("");
 			}
 		});
+
+		ImageButton save = (ImageButton) findViewById(R.id.save);
 		
-		
-		Button save = (Button) findViewById(R.id.save);
 		save.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
@@ -87,7 +104,8 @@ public class ControlActivity extends Activity {
 								// User clicked OK button
 								System.out.println("Text Input: "
 										+ input.getText());
-								new ServerOld().execute("save#"+input.getText());
+								new SendTask().execute("save#"
+										+ input.getText());
 							}
 						});
 				builder.setNegativeButton(R.string.cancel,
@@ -102,7 +120,26 @@ public class ControlActivity extends Activity {
 			}
 		});
 
+		ImageButton start = (ImageButton) findViewById(R.id.done);
+		start.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				new SendTask().execute("start");
+			}
+		});
+		
+		ImageButton refresh = (ImageButton) findViewById(R.id.refresh);
+		refresh.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				new SendTask().execute("refresh");				
+			}
+		});
 	}
+	
+
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -111,4 +148,62 @@ public class ControlActivity extends Activity {
 		return true;
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+        case R.id.action_calibrate:
+        	new SendTask().execute("calibrate");
+            return true;
+        case R.id.action_setIP:
+
+        	AlertDialog.Builder builder = new AlertDialog.Builder(ControlActivity.this);
+        	
+            SharedPreferences settings = getSharedPreferences("MyPrefs", 0);
+            String ip = settings.getString("PROCAMSIP", "0.0.0.0");
+
+        	builder.setMessage("")
+        	       .setTitle("Set IP of PROCAMS");
+
+        	final EditText input = new EditText(this);
+        	input.setText(ip);
+        	builder.setView(input);
+        	
+        	
+        	builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        		public void onClick(DialogInterface dialog, int whichButton) {
+        		  Editable value = input.getText();
+        		  Log.d("QT", "mega: "+ value.toString());
+
+        		  SharedPreferences settings = getSharedPreferences("MyPrefs", 0);
+        	      SharedPreferences.Editor editor = settings.edit();
+        	      editor.putString("PROCAMSIP", value.toString());
+        	      editor.commit();  	      
+        	      Server.getInstanceOf().setIp(value.toString());      	      
+        		}
+        		});
+
+        	builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        		  public void onClick(DialogInterface dialog, int whichButton) {
+        		    // Canceled.
+        		  }
+        		});
+        	
+        	
+        	
+        	
+        	AlertDialog dialog = builder.create();
+        	dialog.show();
+        	return true;       	
+        default:
+            return super.onOptionsItemSelected(item);
+    }
+	}
+
+	@Override
+	protected void onPause() {
+		Server.getInstanceOf().close();
+		Log.d("Main", "Server connection closed");
+		super.onPause();
+	}
 }

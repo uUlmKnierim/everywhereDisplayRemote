@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">qtbiquitousui</string>
+    <string name="app_name">PROCAMS Controller</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-
+    <string name="deleteSurfaceDialog">Delete surface</string>
+    <string name="deleteSurfaceMessage">Do you want to delete the surface</string>
+    <string name="recalibrate">Recalibrate</string>
+    <string name="setIP">Set PROCAMS IP</string>
 </resources>
