@@ -4,4 +4,5 @@ Project includes:
 Android Remote App to control the PROCAMS
 
 For details see thesis at: https://github.com/uUlmKnierim/master-thesis
-and published: https://github.com/uUlmKnierim/everywhereDisplaySoftware
+
+and published code at: https://github.com/uUlmKnierim/everywhereDisplaySoftware
